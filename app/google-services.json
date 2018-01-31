@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "589557050618",
+    "firebase_url": "https://inlove-b397e.firebaseio.com",
+    "project_id": "inlove-b397e",
+    "storage_bucket": "inlove-b397e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:589557050618:android:98d16831d8fbba2e",
+        "android_client_info": {
+          "package_name": "inlove.barbaloira.inlove"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "589557050618-78pubagiied3jag45lqpn5iifnsheat2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "inlove.barbaloira.inlove",
+            "certificate_hash": "3adcdc2cb2f61e29e0388a6b2b4058da24667108"
+          }
+        },
+        {
+          "client_id": "589557050618-2qh7cgtti78ns9b2kacqigs1uodm5jgr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXKH1FI2NaCs-d-G-WciyboSM6rYmlcEk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "589557050618-2qh7cgtti78ns9b2kacqigs1uodm5jgr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

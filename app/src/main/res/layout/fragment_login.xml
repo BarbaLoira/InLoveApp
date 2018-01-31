@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/azur"
+    android:orientation="vertical">
+
+    <FrameLayout xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/fl_login_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="inlove.barbaloira.inlove.fragments.LoginFragment">
+
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_margin="30dp"
+            android:elevation="8dp"
+            app:cardCornerRadius="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="10dp"
+                        android:autoSizeMaxTextSize="1000sp"
+                        android:autoSizeMinTextSize="30sp"
+                        android:autoSizeStepGranularity="15sp"
+                        android:autoSizeTextType="uniform"
+                        android:text="Sign Up"
+                        android:textSize="30sp"
+                        android:textStyle="bold" />
+
+
+                    <EditText
+                        android:id="@+id/et_sign_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginLeft="25dp"
+                        android:layout_marginRight="25dp"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/edittextstyle"
+                        android:hint="Email"
+                        android:imeOptions="actionNext" />
+
+                    <EditText
+                        android:id="@+id/et_sign_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginLeft="25dp"
+                        android:layout_marginRight="25dp"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/edittextstyle"
+                        android:hint="Password"
+                        android:imeOptions="actionNext" />
+
+                    <Button
+                        android:id="@+id/btn_sign"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/signbuttonstyle"
+                        android:elevation="4dp"
+                        android:imeActionLabel="fui"
+                        android:text="Sign in"
+                        android:textColor="@color/white" />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="5dp"
+                        android:autoSizeMaxTextSize="1000sp"
+                        android:autoSizeMinTextSize="15sp"
+                        android:autoSizeStepGranularity="15sp"
+                        android:autoSizeTextType="uniform"
+                        android:imeOptions="actionDone"
+                        android:text="New to Inlove?"
+                        android:textSize="15sp" />
+
+                    <Button
+                        android:id="@+id/btn_create_account"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginRight="4dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/createaccountbuttonstyle"
+                        android:elegantTextHeight="true"
+                        android:elevation="4dp"
+                        android:imeActionLabel="fui"
+                        android:padding="4dp"
+                        android:text="Create your InLove account"
+                        android:textColor="@color/white"
+                        android:textSize="15sp"
+
+                        />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorPrimary"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="5dp"
+                        android:autoSizeMaxTextSize="1000sp"
+                        android:autoSizeMinTextSize="20sp"
+                        android:autoSizeStepGranularity="20sp"
+                        android:autoSizeTextType="uniform"
+                        android:imeOptions="actionDone"
+                        android:text="Sigin Up with Social Plataforms"
+                        android:textColor="@color/white"
+                        android:textSize="20sp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:elevation="6dp"
+                            android:src="@drawable/facebook_login" />
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:elevation="6dp"
+                            android:src="@drawable/gmail_login" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+    </FrameLayout>
+
+</LinearLayout>
