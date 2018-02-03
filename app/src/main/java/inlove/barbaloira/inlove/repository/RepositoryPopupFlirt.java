@@ -1,7 +1,6 @@
 package inlove.barbaloira.inlove.repository;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import inlove.barbaloira.inlove.R;
 import inlove.barbaloira.inlove.model.PopupFlirt;
@@ -16,7 +15,7 @@ public class RepositoryPopupFlirt {
 
     public static ArrayList<PopupFlirt> returnData() {
         for (int i = 0; i < 5; i++) {
-            popupFlirtList.add(new PopupFlirt(i, R.drawable.item_popup_in_love, "me apaixonei por vc !!!"));
+            popupFlirtList.add(new PopupFlirt(i, R.drawable.kiss_cute, "me apaixonei por vc !!!"));
         }
         return popupFlirtList;
     }

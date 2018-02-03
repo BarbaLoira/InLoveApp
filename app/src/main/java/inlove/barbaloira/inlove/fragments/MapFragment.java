@@ -3,27 +3,27 @@ package inlove.barbaloira.inlove.fragments;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.text.Layout;
+import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.Toast;
-import android.view.ViewGroup.LayoutParams;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
@@ -42,12 +42,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,11 +55,10 @@ import java.util.List;
 import inlove.barbaloira.inlove.Adapter.PopupFlirtAdapter;
 import inlove.barbaloira.inlove.MainActivity;
 import inlove.barbaloira.inlove.R;
+import inlove.barbaloira.inlove.Shared.Util;
+import inlove.barbaloira.inlove.model.FlirtLove;
 import inlove.barbaloira.inlove.model.PopupFlirt;
 import inlove.barbaloira.inlove.model.User;
-import inlove.barbaloira.inlove.repository.RepositoryPopupFlirt;
-
-import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 
 /**
@@ -83,6 +82,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
     GeoQuery geoQuery;
     ListView listViewPopupFlirt;
     private View v;
+    boolean gps_enabled = false;
+    boolean network_enabled = false;
+    boolean network_bad_accuracy = false;
+    private List<PopupFlirt> itemFlirt = Util.returnDataIteFlirt();
 
     public MapFragment() {
         // Required empty public constructor
@@ -95,6 +98,32 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.fragment_map, container, false);
         ((MainActivity) getActivity()).setToolbarBottomVisible(true);
+        LocationManager lm = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+        try {
+            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch (Exception ex) {
+        }
+
+        try {
+            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        } catch (Exception ex) {
+        }
+
+        if (!gps_enabled && !network_enabled) {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+            dialog.setMessage("gps network nao abilitado");
+            dialog.setPositiveButton("habilitar localizacao", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    getActivity().startActivity(myIntent);
+                }
+            });
+            dialog.setNegativeButton("Cancelar", null);
+            dialog.show();
+        }
+
 
         mapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.map);
@@ -169,23 +198,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
     @Override
     public void onLocationChanged(Location location) {
         //getgetaplicationcontext!=null
-
-        if (FirebaseAuth.getInstance().getCurrentUser() != null && location.getAccuracy() < 10) {
+        if (FirebaseAuth.getInstance().getCurrentUser() != null && location.getAccuracy() < 90) {
             mLastLocation = location;
 
             LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(40));
+
+            float distanceTo = mLastLocation.distanceTo(location);
+            if (distanceTo < 50)
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(40));
 
 
-         //   if (lastMarker != null)
-        //        lastMarker.remove();
-        //    lastMarker = mMap.addMarker(new MarkerOptions().position(latLng).title("Me")
-        //            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))).;
+            //   if (lastMarker != null)
+            //        lastMarker.remove();
+            //    lastMarker = mMap.addMarker(new MarkerOptions().position(latLng).title("Me")
+            //            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))).;
 
 
-            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users").child("infoMap");
 
             geofire = new GeoFire(ref);
@@ -197,7 +228,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
             // Set a listener for marker click.
             mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
-                public boolean onMarkerClick(Marker marker) {
+                public boolean onMarkerClick(final Marker marker) {
                     if (v != null) {
 
 
@@ -208,8 +239,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
                         ListView lv = (ListView) convertView.findViewById(R.id.lv_item_popup_flirt);
 
                         AlertDialog dialog_card = alertDialog.create();
-                        lv.setAdapter(new PopupFlirtAdapter(getActivity(), returnData()));
+                        lv.setAdapter(new PopupFlirtAdapter(getActivity(), itemFlirt));
+                        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                for (User u : userIntoRadius) {
+                                    Log.d("[ITEM POPUP CLICK]", "User id - "
+                                            + u.getMarker().getSnippet() + " marker id - " + marker.getSnippet());
+                                    if (u.getMarker().getSnippet().contentEquals(marker.getSnippet())) {
+                                        DatabaseReference dbRefMarkerItemPopupFlirt = FirebaseDatabase.getInstance().getReference().child("users").child("infoFlirts");
 
+                                        FlirtLove flirtLove = new FlirtLove(u.getKey(), i);
+                                        dbRefMarkerItemPopupFlirt.child(u.getKey()).setValue(flirtLove);
+
+                                    }
+                                }
+                            }
+                        });
 
                         // dlgAlert.requestWindowFeature(Window.FEATURE_NO_TITLE);
                         // WindowManager.LayoutParams WMLP =
@@ -224,16 +270,37 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
             });
 
             getClosesPersons();
+            getMarkerFlirt();
+        } else if (network_bad_accuracy == false) {
+            network_bad_accuracy = true;
+            AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+            dialog.setMessage("Para uma melhor usabilidade ultilize uma boa coneccao de ineternet");
+            dialog.setPositiveButton("Entendi", null);
+            dialog.show();
+        }
+
+    }
+
+    private void getMarkerFlirt() {
+        DatabaseReference dbRefFetMarkerFlirt = FirebaseDatabase.getInstance().getReference().child("users").child("infoFlirts");
+
+        for (final User u : userIntoRadius) {
+            dbRefFetMarkerFlirt.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    if (snapshot.hasChild(u.getKey())) {
+                     //   u.getMarker().set
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
         }
     }
 
-    public static List<PopupFlirt> returnData() {
-        List<PopupFlirt> popupFlirts = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            popupFlirts.add(new PopupFlirt(i, R.drawable.item_popup_in_love, "me apaixonei por vc !!!"));
-        }
-        return popupFlirts;
-    }
 
 
     @Override
@@ -313,12 +380,28 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
                 if (!myKey.contentEquals(key)) {
+                    boolean newUser = true;
                     if (userIntoRadius == null)
                         userIntoRadius = new ArrayList<>();
+                    if (userIntoRadius.size() == 0) {
 
-                    User user = new User(key, getUserName(key), location);
-                    markerUser(user);
-                    userIntoRadius.add(user);
+                        User user = new User(key, getUserName(key), location);
+                        userIntoRadius.add(user);
+                        markerUser(user);
+                    } else {
+                        for (User u : userIntoRadius) {
+                            if (u.getKey().contentEquals(key)) {
+
+                                markerUser(u);
+                                newUser = false;
+                            }
+                        }
+                        if (newUser) {
+                            User user = new User(key, getUserName(key), location);
+                            userIntoRadius.add(user);
+                            markerUser(user);
+                        }
+                    }
                 }
             }
 
@@ -371,11 +454,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback, GoogleA
         //     user.getMarker().remove();
         if (lastMarkerUser != null)
             lastMarkerUser.remove();
+
         lastMarkerUser = mMap.addMarker(new MarkerOptions().position(l).title("other user")
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-
+        lastMarkerUser.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.location));
         //  user.setMarker(mMap.addMarker(new MarkerOptions().position(l).title(user.getName())));
-
+        lastMarkerUser.setSnippet(user.getKey());
+        user.setMarker(lastMarkerUser);
 
     }
 

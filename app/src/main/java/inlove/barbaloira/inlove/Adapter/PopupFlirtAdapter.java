@@ -59,12 +59,12 @@ public class PopupFlirtAdapter extends BaseAdapter {
 
             ImageView civ_draw_flit = (ImageView) v.findViewById(R.id.civ_draw_flit);
             TextView tv_msg_flit = (TextView) v.findViewById(R.id.tv_msg_flit);
-            TextView tv_id = (TextView) v.findViewById(R.id.tv_id);
+
 
             civ_draw_flit.setImageResource(listPopupFlirts.get(i).getDraw_flit());
             tv_msg_flit.setText(listPopupFlirts.get(i).getMsg_flit());
-            String id = "" + listPopupFlirts.get(i).getId();
-            tv_id.setText(id);
+
+
 
             return v;
         } else {
@@ -72,12 +72,13 @@ public class PopupFlirtAdapter extends BaseAdapter {
 
             ImageView civ_draw_flit = (ImageView) v.findViewById(R.id.civ_draw_flit);
             TextView tv_msg_flit = (TextView) v.findViewById(R.id.tv_msg_flit);
-            TextView tv_id = (TextView) v.findViewById(R.id.tv_id);
+
 
             civ_draw_flit.setImageResource(listPopupFlirts.get(i).getDraw_flit());
             tv_msg_flit.setText(listPopupFlirts.get(i).getMsg_flit());
-            String id = "" + listPopupFlirts.get(i).getId();
-            tv_id.setText(id);
+
+
+
 
             return view;
 
@@ -85,4 +86,7 @@ public class PopupFlirtAdapter extends BaseAdapter {
 
 
     }
+
+
+
 }
